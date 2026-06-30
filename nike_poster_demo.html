@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* ── Poster shell ─────────────────────────────── */
+.poster {
+  position: relative;
+  width: 600px;
+  height: 780px;
+  background: #111;
+  overflow: hidden;
+}
+
+/* ── Ghost text layer ─────────────────────────── */
+.ghost {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+.g {
+  position: absolute;
+  left: -20px; right: -20px;
+  white-space: nowrap;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  color: #fff;
+  user-select: none;
+}
+
+/* ── Red radial glow ──────────────────────────── */
+.glow {
+  position: absolute;
+  width: 480px; height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(227,24,55,0.12) 0%, transparent 70%);
+  top: 35%; left: 50%;
+  transform: translate(-50%, -40%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Corner triangle ──────────────────────────── */
+.corner {
+  position: absolute;
+  top: 0; right: 0;
+  border-left: 90px solid transparent;
+  border-top: 90px solid rgba(227,24,55,0.15);
+  z-index: 5;
+}
+
+/* ── Side text ────────────────────────────────── */
+.side {
+  position: absolute;
+  top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  z-index: 7;
+}
+.side span {
+  writing-mode: vertical-rl;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+}
+.side-l { left: 13px; }
+.side-r { right: 13px; transform: rotate(180deg); }
+
+/* ── Top bar ──────────────────────────────────── */
+.topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 22px 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 8;
+}
+
+/* Brand logo: image with text fallback */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-img {
+  height: 34px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.92);
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+.logo-text-fallback {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: 0.07em;
+  color: #fff;
+  text-transform: uppercase;
+  display: none; /* shown only if img fails */
+}
+
+.season-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.32);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 5px 13px;
+}
+.accent-bar {
+  position: absolute;
+  left: 44px; top: 74px;
+  width: 50px; height: 3px;
+  background: #e31837;
+  z-index: 8;
+}
+
+/* ── 3-Image product grid ─────────────────────── */
+.image-grid {
+  position: absolute;
+  top: 86px;
+  left: 28px; right: 28px;
+  height: 432px;
+  z-index: 4;
+  display: flex;
+  gap: 5px;
+  overflow: hidden;
+}
+
+/* Left: tall main image */
+.grid-main {
+  flex: 0 0 58%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #1a1a1a;  /* fallback if image fails */
+}
+
+/* Right: two stacked thumbs */
+.grid-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.grid-thumb {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #1a1a1a;  /* fallback if image fails */
+}
+
+.grid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s;
+}
+
+/* Dark gradient at bottom of grid — fades into headline */
+.grid-fade {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 160px;
+  background: linear-gradient(to top, #111 0%, transparent 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ── Headline block ───────────────────────────── */
+.hl-block {
+  position: absolute;
+  bottom: 248px;
+  left: 44px; right: 44px;
+  z-index: 8;
+}
+.eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: #e31837;
+  margin-bottom: 8px;
+}
+.headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 68px;
+  line-height: 0.91;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+}
+.headline .red { color: #e31837; }
+
+/* ── Bottom content ───────────────────────────── */
+.bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 44px 28px;
+  z-index: 8;
+  background: linear-gradient(to top, #111 0%, rgba(17,17,17,0.97) 50%, transparent 100%);
+}
+.rule {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.09);
+  margin-bottom: 16px;
+}
+.tags {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 1px;
+}
+.tag-red {
+  color: #e31837;
+  border: 1px solid rgba(227,24,55,0.38);
+  background: rgba(227,24,55,0.08);
+}
+.tag-out {
+  color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.bot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cta {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #e31837;
+  border: none;
+  padding: 13px 32px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+.watermark {
+  font-family: 'Barlow', sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.1);
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ── Ghost text ── -->
+  <div class="ghost">
+    <div class="g" style="top:3%;  font-size:94px;  opacity:.05;">JUST DO IT &nbsp; JUST DO IT &nbsp; JUST DO IT</div>
+    <div class="g" style="top:17%; font-size:110px; opacity:.065;">JUST DO IT &nbsp; JUST DO IT &nbsp; JUST DO IT</div>
+    <div class="g" style="top:33%; font-size:100px; opacity:.045; filter:blur(1px);">JUST DO IT &nbsp; JUST DO IT &nbsp; JUST DO IT</div>
+    <div class="g" style="top:50%; font-size:86px;  opacity:.035; filter:blur(2px);">JUST DO IT &nbsp; JUST DO IT &nbsp; JUST DO IT</div>
+    <div class="g" style="top:65%; font-size:76px;  opacity:.025; filter:blur(3px);">JUST DO IT &nbsp; JUST DO IT</div>
+  </div>
+
+  <div class="glow"></div>
+  <div class="corner"></div>
+
+  <!-- ── Side text ── -->
+  <div class="side side-l"><span>Nike</span></div>
+  <div class="side side-r"><span>ORIGINALS</span></div>
+
+  <!-- ── Top bar with brand logo ── -->
+  <div class="topbar">
+    <div class="logo-wrap">
+      <img
+        class="logo-img"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/250px-Logo_NIKE.svg.png"
+        alt="Nike"
+        onerror="this.style.display='none'; document.querySelector('.logo-text-fallback').style.display='block';"
+      >
+      <span class="logo-text-fallback">NIKE</span>
+    </div>
+    <div class="season-badge">SS 2025</div>
+  </div>
+  <div class="accent-bar"></div>
+
+  <!-- ── 3-image product grid ── -->
+  <div class="image-grid">
+
+    <!-- Main tall image (left) -->
+    <div class="grid-main">
+      <img
+        class="grid-img"
+        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=340&h=440&q=80"
+        alt="Nike product"
+        onerror="this.remove()"
+      >
+    </div>
+
+    <!-- Two stacked thumbs (right) -->
+    <div class="grid-stack">
+      <div class="grid-thumb">
+        <img
+          class="grid-img"
+          src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?auto=format&fit=crop&w=220&h=215&q=80"
+          alt="Nike product"
+          onerror="this.remove()"
+        >
+      </div>
+      <div class="grid-thumb">
+        <img
+          class="grid-img"
+          src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=220&h=215&q=80"
+          alt="Nike product"
+          onerror="this.remove()"
+        >
+      </div>
+    </div>
+
+    <!-- Gradient fade at bottom of grid -->
+    <div class="grid-fade"></div>
+  </div>
+
+  <!-- ── Headline ── -->
+  <div class="hl-block">
+    <div class="eyebrow">New Season Drop</div>
+    <div class="headline">
+      EVERY SPORT.<br>
+      <span class="red">EVERY BODY.</span>
+    </div>
+  </div>
+
+  <!-- ── Bottom ── -->
+  <div class="bottom">
+    <div class="rule"></div>
+    <div class="tags">
+      <span class="tag tag-red">Multi-Sport Range</span>
+      <span class="tag tag-out">Global Athlete Trust</span>
+      <span class="tag tag-out">Premium Performance</span>
+    </div>
+    <div class="bot-row">
+      <a class="cta" href="#">Shop Now</a>
+      <span class="watermark">Generated by MarkForge AI · RAG-Powered</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

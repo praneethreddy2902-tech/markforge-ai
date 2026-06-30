@@ -1,0 +1,6 @@
+url,status,brand,tone,latency_s,chunks,avg_similarity,jaccard,taglines,error
+https://www.nike.com,OK,Nike,bold,83.31,5,0.5675,0.0678,Be Legendary | Own Every Moment | Unlock Your Potential,
+https://www.apple.com,OK,Apple,minimal,59.9,5,0.505,0.0862,"Designed for You | Innovate, Inspire, and Connect | Elevate Your Experience",
+https://www.redbull.com,OK,Red Bull,bold,75.02,5,0.5193,0.1022,Gives You Wings | For Those Who Refuse to Be Tamed | The Ultimate Performance-Boosting Fuel,
+https://www.tesla.com,OK,Tesla,minimal,85.4,5,0.4949,0.1163,"Empowering Sustainable Energy | Leading the Charge to a Zero-Emission Tomorrow | Powering Progress, One Charge at a Time",
+https://streamlit.io,OK,Streamlit • A faster way to build and share data apps,friendly,95.87,5,0.6047,0.1286,A faster way to build and share data apps | Streamline your workflow with Streamlit | Where Data Science Meets Innovation,
