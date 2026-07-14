@@ -19,17 +19,6 @@ AI-powered Marketing Poster Generation using Retrieval-Augmented Generation (RAG
 
 </p>
 
----
-
-# 🎥 Live Demo
-
-> **Live Application:** *(Coming Soon)*
-
-> **Demo Video:** *(Add YouTube Link)*
-
-> **Project Report:** *(Optional)*
-
----
 
 # 📸 Demo
 
